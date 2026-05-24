@@ -34,10 +34,3 @@ export async function generateSitemap() {
   return [...staticPages, ...dynamicPages];
 }
 
-export default async function Sitemap() {
-  const sitemap = await generateSitemap();
-  
-  return (
-    <link rel="sitemap" href="/sitemap.xml" />
-  );
-}
