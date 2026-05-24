@@ -16,11 +16,11 @@ export async function generateStaticParams() {
     .map(item => ({ slug: item.slug }));
 }
 
-export default async function KeywordPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function KeywordPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   
   // Mock data for demonstration, normally you'd fetch from a DB or a detailed CSV
-  const title = slug.replace(/-/g, ' ').toUpperCase();
+  const title = slug ? slug.replace(/-/g, ' ').toUpperCase() : 'CARPLAYGO';
   
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f] px-6 py-20">
