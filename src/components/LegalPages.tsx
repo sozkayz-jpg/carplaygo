@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LegalPage = ({ title, content }) => (
+const LegalPage = ({ title, content }: { title: string; content: React.ReactNode }) => (
   <div className="min-h-screen bg-white text-[#1d1d1f] font-sans px-6 py-24">
     <div className="max-w-3xl mx-auto">
       <h1 className="text-4xl font-bold mb-10 tracking-tight">{title}</h1>
