@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import fs from 'fs';
 import path from 'path';
 
-export async function generateSitemap() {
+export default async function generateSitemap() {
   const csvPath = path.join(process.cwd(), 'keywords.csv');
   const content = fs.readFileSync(csvPath, 'utf8');
   
