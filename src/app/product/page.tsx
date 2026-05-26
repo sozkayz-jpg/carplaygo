@@ -1,5 +1,7 @@
 import React from 'react';
 import { JSONLD, productSchema } from '@/components/JSONLD';
+import Navbar from '@/components/Navbar';
+import ProductGallery from '@/components/ProductGallery';
 
 const TrustBadges = () => (
   <div className="flex flex-wrap justify-center gap-8 py-8 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
@@ -21,43 +23,13 @@ const TrustBadges = () => (
 export default function ProductPage() {
   return (
     <div className="min-h-screen bg-white text-[#1d1d1f] font-sans">
-      <nav className="fixed top-0 w-full z-50 bg-white/80 apple-blur border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 h-12 flex items-center justify-center">
-          <a href="/" className="text-lg font-semibold tracking-tight">CarplayGO</a>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="pt-24 px-6 max-w-7xl mx-auto">
         <JSONLD data={productSchema} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Product Image Gallery */}
-          <div className="space-y-4">
-            <div className="aspect-square bg-apple-gray rounded-3xl overflow-hidden">
-               <img
-                 src="/product-main.jpg"
-                 alt="Dongle CarplayGO - Vue 3D"
-                 className="w-full h-full object-cover"
-               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden">
-                <img
-                  src="/product-thumb-1.jpg"
-                  alt="CarplayGO - Angle Vue 1"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden">
-                <img
-                  src="/product-thumb-2.jpg"
-                  alt="CarplayGO - Angle Vue 2"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
+          <ProductGallery />
 
-          {/* Product Details */}
           <div className="lg:pl-8">
             <div className="mb-2 inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">
               NOUVEAUTÉ 2026
@@ -73,7 +45,7 @@ export default function ProductPage() {
             <div className="space-y-6 mb-10">
               <p className="text-lg text-gray-600 leading-relaxed">
                 Fini les câbles encombrants. CarplayGO transforme votre système filaire en une expérience 100% sans fil, 
-                stable et ultra-rapide. Compatible avec 99% des véhicules d'origine.
+                stable et ultra-rapide. Compatible avec 99% des véhicules d&apos;origine.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3 text-gray-700 font-medium">
