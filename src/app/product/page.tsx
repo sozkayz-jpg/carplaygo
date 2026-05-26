@@ -33,16 +33,26 @@ export default function ProductPage() {
           {/* Product Image Gallery */}
           <div className="space-y-4">
             <div className="aspect-square bg-apple-gray rounded-3xl overflow-hidden">
-               <div className="w-full h-full flex items-center justify-center text-gray-400 italic">
-                 [Image HD du Dongle CarplayGO - Vue 3D]
-               </div>
+               <img
+                 src="/product-main.jpg"
+                 alt="Dongle CarplayGO - Vue 3D"
+                 className="w-full h-full object-cover"
+               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden flex items-center justify-center text-gray-400 italic text-xs">
-                [Angle Vue 1]
+              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden">
+                <img
+                  src="/product-thumb-1.jpg"
+                  alt="CarplayGO - Angle Vue 1"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden flex items-center justify-center text-gray-400 italic text-xs">
-                [Angle Vue 2]
+              <div className="aspect-square bg-apple-gray rounded-2xl overflow-hidden">
+                <img
+                  src="/product-thumb-2.jpg"
+                  alt="CarplayGO - Angle Vue 2"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
