@@ -2,15 +2,23 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+interface Order {
+  id: string;
+  orderNumber: string;
+  total: number;
+  status: string;
+  createdAt: Date;
+}
+
 export default async function OrdersPage() {
   const session = await auth();
   const userId = session?.user?.id;
 
   const orders = userId
-    ? await prisma.order.findMany({
+    ? ((await prisma.order.findMany({
         where: { userId },
         orderBy: { createdAt: "desc" },
-      })
+      })) as Order[])
     : [];
 
   return (

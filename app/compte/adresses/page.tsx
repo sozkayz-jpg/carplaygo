@@ -1,12 +1,22 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+interface Address {
+  id: string;
+  firstName: string;
+  lastName: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  isDefault: boolean;
+}
+
 export default async function AddressesPage() {
   const session = await auth();
   const userId = session?.user?.id;
 
   const addresses = userId
-    ? await prisma.address.findMany({ where: { userId } })
+    ? ((await prisma.address.findMany({ where: { userId } })) as Address[])
     : [];
 
   return (
