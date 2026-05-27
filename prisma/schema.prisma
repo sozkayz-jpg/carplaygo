@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  phone         String?
+  role          UserRole  @default(CUSTOMER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders    Order[]
+  addresses Address[]
+  reviews   Review[]
+  tickets   SupportTicket[]
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+model Address {
+  id         String      @id @default(cuid())
+  userId     String
+  type       AddressType
+  firstName  String
+  lastName   String
+  street     String
+  city       String
+  postalCode String
+  country    String      @default("FR")
+  phone      String?
+  isDefault  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  description      String   @db.Text
+  shortDescription String
+  price            Int
+  comparePrice     Int?
+  sku              String   @unique
+  stockQuantity    Int      @default(0)
+  images           Json     @default("[]")
+  isActive         Boolean  @default(true)
+  metadata         Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  variants   ProductVariant[]
+  orderItems OrderItem[]
+  reviews    Review[]
+}
+
+model ProductVariant {
+  id            String  @id @default(cuid())
+  productId     String
+  name          String
+  price         Int
+  sku           String  @unique
+  stockQuantity Int     @default(0)
+  isActive      Boolean @default(true)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  orderNumber           String      @unique
+  userId                String?
+  status                OrderStatus @default(PENDING)
+  subtotal              Int
+  shippingCost          Int         @default(0)
+  discountAmount        Int         @default(0)
+  total                 Int
+  currency              String      @default("EUR")
+  stripePaymentIntentId String?
+  stripeSessionId       String?
+  shippingAddress       Json?
+  billingAddress        Json?
+  trackingNumber        String?
+  trackingUrl           String?
+  carrier               String?
+  notes                 String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  user          User?                @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String?
+  variantId   String?
+  productName String
+  variantName String?
+  price       Int
+  quantity    Int
+  total       Int
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product?       @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  productId   String
+  orderId     String?
+  rating      Int
+  title       String
+  body        String   @db.Text
+  isVerified  Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  adminReply  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Vehicle {
+  id           String   @id @default(cuid())
+  brand        String
+  model        String
+  yearStart    Int
+  yearEnd      Int?
+  trim         String?
+  usbType      String?
+  isCompatible Boolean  @default(true)
+  notes        String?  @db.Text
+  slug         String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model BlogPost {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  excerpt         String
+  body            String   @db.Text
+  coverImage      String?
+  author          String   @default("CarplayGO")
+  category        String   @default("general")
+  metaTitle       String?
+  metaDescription String?
+  isPublished     Boolean  @default(false)
+  publishedAt     DateTime?
+  readingTime     Int?
+  views           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum PromoCodeType {
+  PERCENT
+  FIXED
+}
+
+model PromoCode {
+  id             String        @id @default(cuid())
+  code           String        @unique
+  type           PromoCodeType
+  value          Int
+  minOrderAmount Int?
+  maxUses        Int?
+  usedCount      Int           @default(0)
+  expiresAt      DateTime?
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model SupportTicket {
+  id        String         @id @default(cuid())
+  userId    String
+  orderId   String?
+  subject   String
+  status    TicketStatus   @default(OPEN)
+  priority  TicketPriority @default(NORMAL)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages TicketMessage[]
+}
+
+model TicketMessage {
+  id          String   @id @default(cuid())
+  ticketId    String
+  userId      String?
+  body        String   @db.Text
+  isFromAdmin Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  source    String?
+  createdAt DateTime @default(now())
+}
